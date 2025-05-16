@@ -1,23 +1,28 @@
-function convertToJson(res) {
-  if (res.ok) {
-    return res.json();
-  } else {
-    throw new Error("Bad Response");
-  }
-}
+import { setLocalStorage } from './utils.mjs';
 
-export default class ProductData {
-  constructor(category) {
-    this.category = category;
-    this.path = `../json/${this.category}.json`;
+export default class ProductDetails {
+  constructor(productId, dataSource) {
+    this.productId = productId;
+    this.dataSource = dataSource;
+    this.product = {};
   }
-  getData() {
-    return fetch(this.path)
-      .then(convertToJson)
-      .then((data) => data);
+
+  async init() {
+    this.product = await this.dataSource.findProductById(this.productId);
+    this.renderProductDetails();
+    document.getElementById('addToCart')
+      .addEventListener('click', this.addToCart.bind(this));
   }
-  async findProductById(id) {
-    const products = await this.getData();
-    return products.find((item) => item.Id === id);
+
+  addToCart() {
+    setLocalStorage('so-cart', this.product);
+  }
+
+  renderProductDetails() {
+    document.querySelector('.product-detail__title').textContent = this.product.Name;
+    document.querySelector('.product-detail__description').textContent = this.product.Description;
+    document.querySelector('.product-card__image img').src = this.product.Image;
+    document.querySelector('.product-card__image img').alt = this.product.Name;
+    document.querySelector('.product-card__price').textContent = `$${this.product.FinalPrice}`;
   }
 }
