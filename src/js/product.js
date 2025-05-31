@@ -19,3 +19,9 @@ async function addToCartHandler(e) {
 document
   .getElementById("addToCart")
   .addEventListener("click", addToCartHandler);
+
+// Import necessary modules
+import { loadHeaderFooter } from "../utils.mjs"; 
+
+// Load header and footer dynamically into product pages
+loadHeaderFooter();
