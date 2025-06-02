@@ -118,8 +118,8 @@ export async function loadHeaderFooter() {
     const footerTemplate = await loadTemplate("/partials/footer.html");
 
     // Grab the header and footer placeholder elements from the DOM
-    const headerElement = document.querySelector("#header");
-    const footerElement = document.querySelector("#footer");
+    const headerElement = document.querySelector("#main-header");
+    const footerElement = document.querySelector("#main-footer");
 
     // Ensure the elements exist before rendering
     if (!headerElement || !footerElement) {
