@@ -1,5 +1,5 @@
-import { getLocalStorage, setLocalStorage } from "./utils.mjs";
-import ProductData from "./ProductData.mjs";
+import { getLocalStorage, setLocalStorage } from "../js/utils.mjs";
+import ProductData from "../js/ProductData.mjs";
 
 const dataSource = new ProductData("tents");
 
@@ -21,7 +21,7 @@ document
   .addEventListener("click", addToCartHandler);
 
 // Import necessary modules
-import { loadHeaderFooter } from "../utils.mjs"; 
+import { loadHeaderFooter } from "../js/utils.mjs"; 
 
 // Load header and footer dynamically into product pages
 loadHeaderFooter();
