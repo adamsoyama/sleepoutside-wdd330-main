@@ -1,4 +1,4 @@
-import { getLocalStorage } from "./utils.mjs";
+import { getLocalStorage } from "../js/utils.mjs";
 
 function renderCartContents() {
   const cartItems = getLocalStorage("so-cart");
@@ -28,7 +28,7 @@ function cartItemTemplate(item) {
 renderCartContents();
 
 // Import necessary modules
-import { loadHeaderFooter } from "../utils.mjs";
+import { loadHeaderFooter } from "../js/utils.mjs";
 
 // Load header and footer dynamically into cart pages
 loadHeaderFooter();
