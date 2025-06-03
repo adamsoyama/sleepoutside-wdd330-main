@@ -4,6 +4,10 @@ import { defineConfig } from "vite";
 export default defineConfig({
   root: "src/",
 
+  resolve: {
+    extensions: [".mjs", ".js"],
+  },
+
   build: {
     outDir: "../dist",
     rollupOptions: {
@@ -25,6 +29,9 @@ export default defineConfig({
           "src/product_pages/northface-talus-4.html",
         ),
         productListing: resolve(__dirname, "src/product_listing/index.html"), // Add the Product Listing index page
+      },
+      output: {
+        format: "esm", // Ensures ES Module compatibility
       },
     },
   },

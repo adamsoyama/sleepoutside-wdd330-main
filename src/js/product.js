@@ -21,7 +21,7 @@ document
   .addEventListener("click", addToCartHandler);
 
 // Import necessary modules
-import { loadHeaderFooter } from "../utils.mjs";
+import { loadHeaderFooter } from "../js/utils.mjs";
 
 // Load header and footer dynamically into product pages
 loadHeaderFooter();
