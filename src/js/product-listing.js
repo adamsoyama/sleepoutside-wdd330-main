@@ -1,7 +1,7 @@
 // 📌 Handles rendering product listings dynamically
 
-import ProductData from "./ProductData.mjs";
-import ProductList from "./ProductList.mjs";
+import ProductData from "../js/ProductData.mjs";
+import ProductList from "../js/ProductList.mjs";
 
 // Retrieve the category from the URL parameters
 const urlParams = new URLSearchParams(window.location.search);

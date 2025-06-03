@@ -1,4 +1,4 @@
-import { renderListWithTemplate } from "./utils.mjs"; // Import utility function for rendering
+import { renderListWithTemplate } from "../js/utils.mjs"; // Import utility function for rendering
 
 /**
  * Generates an HTML string for a shopping cart item using a template.

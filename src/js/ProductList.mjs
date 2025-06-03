@@ -1,6 +1,6 @@
 // 📌 This module handles generating product cards dynamically using template literal strings.
 
-import { renderListWithTemplate } from "./utils.mjs"; // Import the utility function
+import { renderListWithTemplate } from "../js/utils.mjs"; // Import the utility function
 
 /**
  * Generates an HTML string for a product card using template literals.

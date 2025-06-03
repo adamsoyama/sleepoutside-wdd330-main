@@ -66,22 +66,17 @@ export function renderListWithTemplate(
   parentElement.insertAdjacentHTML(position, htmlStrings); // Inserts generated HTML into the DOM
 }
 
- export function renderWithTemplate(
-  template,
-  parentElement,
-  data,
-  callback
-) {
- parentElement.innerHTML = template;
- if (callback) {
-   callback(data);
- }
+export function renderWithTemplate(template, parentElement, data, callback) {
+  parentElement.innerHTML = template;
+  if (callback) {
+    callback(data);
+  }
 }
 
 /**
  * Asynchronously fetches the content of an HTML file and returns it as a string.
  * This is useful for dynamically loading HTML templates into the page.
- * 
+ *
  * @param {string} path - The file path to the HTML template.
  * @returns {Promise<string>} - A promise that resolves to the HTML content as a string.
  */
@@ -92,7 +87,9 @@ export async function loadTemplate(path) {
 
     // Check if the response was successful (HTTP status in the range 200-299)
     if (!response.ok) {
-      throw new Error(`Failed to fetch template from ${path}: ${response.status} ${response.statusText}`);
+      throw new Error(
+        `Failed to fetch template from ${path}: ${response.status} ${response.statusText}`,
+      );
     }
 
     // Convert the response body to text format and return it
