@@ -1,12 +1,6 @@
-<<<<<<< HEAD
-// 📌 This module handles generating product cards dynamically using template literal strings.
-
-import { renderListWithTemplate } from "../js/utils.mjs"; // Import the utility function
-=======
 // 📌 This module handles generating product cards dynamically using template literals.
 import { renderListWithTemplate } from "./utils.mjs"; // Import the utility function
 const baseURL = import.meta.env.VITE_SERVER_URL; // Base API URL from environment variables
->>>>>>> ao--individual3
 
 /**
  * Generates an HTML string for a product card using template literals.

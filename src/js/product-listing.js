@@ -1,13 +1,6 @@
-<<<<<<< HEAD
-// 📌 Handles rendering product listings dynamically
-
-import ProductData from "../js/ProductData.mjs";
-import ProductList from "../js/ProductList.mjs";
-=======
 import ProductData from "./ProductData.mjs";
 import ProductList from "./ProductList.mjs";
 import { loadHeaderFooter, getParam } from "./utils.mjs";
->>>>>>> ao--individual3
 
 // Load header and footer templates dynamically
 loadHeaderFooter();

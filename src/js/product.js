@@ -1,14 +1,9 @@
-<<<<<<< HEAD
-import { getLocalStorage, setLocalStorage } from "../js/utils.mjs";
-import ProductData from "./ProductData.mjs";
-=======
 import {
   getLocalStorage,
   setLocalStorage,
   loadHeaderFooter,
 } from "../js/utils.mjs";
 import ProductData from "../js/ProductData.mjs";
->>>>>>> ao--individual3
 
 const dataSource = new ProductData();
 
@@ -39,12 +34,5 @@ document
   .getElementById("addToCart")
   ?.addEventListener("click", addToCartHandler);
 
-<<<<<<< HEAD
-// Import necessary modules
-import { loadHeaderFooter } from "../js/utils.mjs";
-
-// Load header and footer dynamically into product pages
-=======
 // Load header and footer dynamically
->>>>>>> ao--individual3
 loadHeaderFooter();
