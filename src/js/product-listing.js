@@ -1,20 +1,27 @@
-// 📌 Handles rendering product listings dynamically
-
 import ProductData from "./ProductData.mjs";
 import ProductList from "./ProductList.mjs";
+import { loadHeaderFooter, getParam } from "./utils.mjs";
 
-// Retrieve the category from the URL parameters
-const urlParams = new URLSearchParams(window.location.search);
-const category = urlParams.get("category") || "tents"; // Default to 'tents' if no category is provided
+// Load header and footer templates dynamically
+loadHeaderFooter();
+
+// Retrieve the category from the URL using getParam()
+const category = getParam("category") || "tents"; // Default to 'tents' if no category is provided
+
+// Select the title element and update it
+const titleElement = document.querySelector(".page-title"); // Ensure this selector matches your HTML
+if (titleElement) {
+  titleElement.textContent = `Top Products: ${category}`;
+}
+
+// Create an instance of the ProductData class (no category needed in constructor)
+const dataSource = new ProductData();
 
 // Select the HTML element where product cards will be displayed
 const listElement = document.querySelector(".product-list");
 
-// Create an instance of the ProductData class to fetch product details dynamically
-const productData = new ProductData(category);
-
-// Create an instance of the ProductList class for rendering products dynamically
-const productList = new ProductList(category, productData, listElement);
+// Create an instance of the ProductList class with the category, data source, and list element
+const myList = new ProductList(category, dataSource, listElement);
 
 // Initialize the product list
-productList.init();
+myList.init();
