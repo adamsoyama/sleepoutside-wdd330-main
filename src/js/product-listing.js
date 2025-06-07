@@ -14,8 +14,8 @@ if (titleElement) {
   titleElement.textContent = `Top Products: ${category}`;
 }
 
-// Create an instance of the ProductData class (no category needed in constructor)
-const dataSource = new ProductData();
+// Create an instance of the ExternalServices class (no category needed in constructor)
+const dataSource = new ExternalServices();
 
 // Select the HTML element where product cards will be displayed
 const listElement = document.querySelector(".product-list");

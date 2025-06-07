@@ -1,7 +1,7 @@
 import { getParam, loadHeaderFooter } from "../js/utils.mjs";
-import ProductData from "../js/ProductData.mjs";
+import ExternalServices from "../js/ExternalServices.mjs";
 
-const dataSource = new ProductData();
+const dataSource = new ExternalServices();
 const productId = getParam("product"); // Get product ID from URL parameter
 const productElement = document.querySelector(".product-detail");
 

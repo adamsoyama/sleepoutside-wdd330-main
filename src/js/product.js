@@ -3,9 +3,9 @@ import {
   setLocalStorage,
   loadHeaderFooter,
 } from "../js/utils.mjs";
-import ProductData from "../js/ProductData.mjs";
+import ExternalServices from "../js/ExternalServices.mjs";
 
-const dataSource = new ProductData();
+const dataSource = new ExternalServices();
 
 // Function to add a product to the cart
 function addProductToCart(product) {
