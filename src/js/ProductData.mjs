@@ -1,4 +1,4 @@
-// Base URL for API requests, dynamically pulled from environment variables
+// 📌 Base URL for API requests, dynamically pulled from environment variables
 const baseURL = import.meta.env.VITE_SERVER_URL;
 
 /**
@@ -14,8 +14,9 @@ function convertToJson(res) {
   }
 }
 
-export default class ProductData {
-  constructor() {} // Removed category and path
+// 📌 Updated class name to reflect extended functionality beyond products
+export default class ExternalServices {
+  constructor() {}
 
   /**
    * Fetches product data based on category using async/await.
@@ -25,10 +26,7 @@ export default class ProductData {
   async getData(category) {
     try {
       const response = await fetch(`${baseURL}products/search/${category}`);
-
-      // Convert response to JSON safely
       const data = await convertToJson(response);
-
       return data.Result; // API response is structured under "Result"
     } catch (error) {
       console.error("Error fetching product data:", error);
@@ -44,5 +42,27 @@ export default class ProductData {
   async findProductById(id) {
     const products = await this.getData("all"); // Fetch all products
     return products ? products.find((item) => item.id === id) : null;
+  }
+
+  /**
+   * Submits an order to the checkout endpoint using a POST request.
+   * @param {Object} orderDetails - The order details including customer info, payment, and cart items.
+   * @returns {Promise<Object>} - Confirmation response from the server.
+   */
+  async submitOrder(orderDetails) {
+    try {
+      const response = await fetch(`${baseURL}checkout`, {
+        method: "POST",
+        headers: { "Content-Type": "application/json" },
+        body: JSON.stringify(orderDetails), // Convert order data to JSON format
+      });
+
+      if (!response.ok) throw new Error("Failed to submit order");
+
+      return response.json(); // Return order confirmation response
+    } catch (error) {
+      console.error("Order submission error:", error);
+      return null; // Prevents app crashes and handles error properly
+    }
   }
 }
