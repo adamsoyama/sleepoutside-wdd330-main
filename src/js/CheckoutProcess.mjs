@@ -1,5 +1,9 @@
+import ExternalServices from "./ExternalServices.mjs";
+import { getLocalStorage } from "../js/utils.mjs";
+
 export default class CheckoutProcess {
-  constructor(key, outputSelector) {
+  constructor(formSelector, key, outputSelector) {
+    this.form = document.querySelector(formSelector);
     this.key = key;
     this.outputSelector = outputSelector;
     this.list = [];
@@ -7,16 +11,17 @@ export default class CheckoutProcess {
     this.shipping = 0;
     this.tax = 0;
     this.orderTotal = 0;
+    this.service = new ExternalServices("http://wdd330-backend.onrender.com");
   }
 
   init() {
     this.list = getLocalStorage(this.key);
     this.calculateItemSubTotal();
     this.calculateOrderTotal();
+    this.form.addEventListener("submit", (event) => this.checkout(event)); // Attach event listener
   }
 
   calculateItemSubTotal() {
-    // Calculate the total dollar amount of items in the cart
     if (!this.list || this.list.length === 0) {
       this.itemTotal = 0;
       document.querySelector(`${this.outputSelector} #subtotal`).innerText =
@@ -30,12 +35,9 @@ export default class CheckoutProcess {
   }
 
   calculateOrderTotal() {
-    // Calculate tax and shipping
     this.tax = this.itemTotal * 0.06; // 6% sales tax
     this.shipping = 10 + (this.list.length - 1) * 2; // $10 + $2 per additional item
     this.orderTotal = this.itemTotal + this.tax + this.shipping;
-
-    // Display the totals
     this.displayOrderTotals();
   }
 
@@ -46,5 +48,62 @@ export default class CheckoutProcess {
       `$${this.shipping.toFixed(2)}`;
     document.querySelector(`${this.outputSelector} #order-total`).innerText =
       `$${this.orderTotal.toFixed(2)}`;
+  }
+
+  prepareOrderItems() {
+    return this.list.map((item) => ({
+      id: item.id,
+      name: item.Name,
+      price: item.FinalPrice,
+      quantity: 1,
+    }));
+  }
+
+  formDataToJSON() {
+    const formData = new FormData(this.form);
+    const convertedJSON = {};
+
+    formData.forEach((value, key) => {
+      convertedJSON[key] = value;
+    });
+
+    return convertedJSON;
+  }
+
+  async checkout(event) {
+    event.preventDefault(); // Prevent form from default submission behavior
+
+    const formData = this.formDataToJSON();
+    const orderDetails = {
+      orderDate: new Date().toISOString(),
+      fname: formData.fname,
+      lname: formData.lname,
+      street: formData.street,
+      city: formData.city,
+      state: formData.state,
+      zip: formData.zip,
+      cardNumber: formData.cardNumber,
+      expiration: formData.expiration,
+      code: formData.code,
+      items: this.prepareOrderItems(),
+      orderTotal: this.orderTotal.toFixed(2),
+      shipping: this.shipping,
+      tax: this.tax.toFixed(2),
+    };
+
+    try {
+      const confirmation = await this.service.submitOrder(orderDetails);
+
+      if (confirmation) {
+        alert("Order placed successfully!");
+        localStorage.removeItem(this.key); // Clear cart after success
+        window.location.href = "/confirmation.html"; // Redirect to confirmation page
+      } else {
+        alert("Failed to place the order. Please try again.");
+      }
+    } catch (error) {
+      console.error("Checkout error:", error);
+      alert("An error occurred while placing the order.");
+    }
   }
 }
