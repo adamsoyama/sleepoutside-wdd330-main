@@ -1,15 +1,11 @@
-// wrapper for querySelector...returns matching element
+// 📌 Wrapper for querySelector (returns matching element)
 export function qs(selector, parent = document) {
   const element = parent.querySelector(selector);
-  if (!element) {
-    console.warn(`No element found for selector: ${selector}`);
-  }
+  if (!element) console.warn(`No element found for selector: ${selector}`);
   return element;
 }
-// or a more concise version if you are into that sort of thing:
-// export const qs = (selector, parent = document) => parent.querySelector(selector);
 
-// retrieve data from localstorage
+//  Retrieve data from localStorage
 export function getLocalStorage(key) {
   try {
     return JSON.parse(localStorage.getItem(key)) || null;
@@ -18,21 +14,20 @@ export function getLocalStorage(key) {
     return null;
   }
 }
-// save data to local storage
+
+//  Save data to localStorage
 export function setLocalStorage(key, data) {
-  if (typeof data !== "string") {
-    localStorage.setItem(key, JSON.stringify(data)); // Converts non-string data to JSON before storing
-  } else {
-    localStorage.setItem(key, data); // Allows direct storage of strings
-  }
+  localStorage.setItem(
+    key,
+    typeof data !== "string" ? JSON.stringify(data) : data,
+  );
 }
-// set a listener for both touchend and click
+
+//  Set event listener for both touchend and click
 export function setClick(selector, callback) {
   const elements = document.querySelectorAll(selector);
-  if (elements.length === 0) {
-    console.warn(`No elements found for selector: ${selector}`);
-    return;
-  }
+  if (!elements.length)
+    return console.warn(`No elements found for selector: ${selector}`);
 
   elements.forEach((el) => {
     el.addEventListener("touchend", (event) => {
@@ -44,12 +39,7 @@ export function setClick(selector, callback) {
 }
 
 /**
- * Renders a list using a provided template function and inserts it into the DOM.
- * @param {Function} templateFn - The function used to generate HTML for each item.
- * @param {HTMLElement} parentElement - The HTML element to insert content into.
- * @param {Array} list - The array of items to be rendered.
- * @param {string} position - Specifies where to insert content (default: "afterbegin").
- * @param {boolean} clear - Whether to clear existing content before inserting new elements (default: false).
+ *  Renders a list using a provided template function and inserts it into the DOM.
  */
 export function renderListWithTemplate(
   templateFn,
@@ -58,76 +48,105 @@ export function renderListWithTemplate(
   position = "afterbegin",
   clear = false,
 ) {
-  if (clear) {
-    parentElement.innerHTML = ""; // Clears the target element if needed
-  }
-
-  const htmlStrings = list.map(templateFn).join(""); // Generates HTML strings
-  parentElement.insertAdjacentHTML(position, htmlStrings); // Inserts generated HTML into the DOM
-}
-
-export function renderWithTemplate(template, parentElement, data, callback) {
-  parentElement.innerHTML = template;
-  if (callback) {
-    callback(data);
-  }
+  if (clear) parentElement.innerHTML = "";
+  parentElement.insertAdjacentHTML(position, list.map(templateFn).join(""));
 }
 
 /**
- * Asynchronously fetches the content of an HTML file and returns it as a string.
- * This is useful for dynamically loading HTML templates into the page.
- *
- * @param {string} path - The file path to the HTML template.
- * @returns {Promise<string>} - A promise that resolves to the HTML content as a string.
+ *  Renders content with an optional callback.
+ */
+export function renderWithTemplate(template, parentElement, data, callback) {
+  parentElement.innerHTML = template;
+  if (callback) callback(data);
+}
+
+/**
+ *  Fetches an HTML file asynchronously.
  */
 export async function loadTemplate(path) {
   try {
-    // Fetch the HTML file from the provided path
     const response = await fetch(path);
-
-    // Check if the response was successful (HTTP status in the range 200-299)
-    if (!response.ok) {
+    if (!response.ok)
       throw new Error(
         `Failed to fetch template from ${path}: ${response.status} ${response.statusText}`,
       );
-    }
-
-    // Convert the response body to text format and return it
     return await response.text();
   } catch (error) {
-    // Log any errors encountered during the fetch process
     console.error(`Error loading template from '${path}':`, error);
-
-    // Return an empty string to prevent breaking functionality when an error occurs
     return "";
   }
 }
 
-// STEP 9.
 /**
- * Loads the header and footer templates from partials, retrieves the placeholder elements,
- * and renders them into the DOM using `renderWithTemplate`.
+ *  Loads header and footer templates into placeholders.
  */
 export async function loadHeaderFooter() {
   try {
-    // Fetch header and footer template content asynchronously
     const headerTemplate = await loadTemplate("/partials/header.html");
     const footerTemplate = await loadTemplate("/partials/footer.html");
 
-    // Grab the header and footer placeholder elements from the DOM
-    const headerElement = document.querySelector("#main-header");
-    const footerElement = document.querySelector("#main-footer");
+    const headerElement = qs("#main-header");
+    const footerElement = qs("#main-footer");
 
-    // Ensure the elements exist before rendering
-    if (!headerElement || !footerElement) {
-      console.error("Header or footer Element not found in the DOM.");
-      return;
-    }
+    if (!headerElement || !footerElement)
+      return console.error("Header or footer element not found in the DOM.");
 
-    // Render header and footer content into their respective placeholders
     renderWithTemplate(headerTemplate, headerElement);
     renderWithTemplate(footerTemplate, footerElement);
   } catch (error) {
     console.error("Error loading header or footer:", error);
   }
+}
+
+/**
+ *  Displays a custom, non-intrusive alert message at the top of the main element.
+ * @param {string} message - Alert message to display.
+ * @param {string} type - Type of alert ("error" or "success").
+ * @param {string} fieldSelector - Selector for the field triggering the error (default: null).
+ * @param {boolean} scroll - Whether to scroll to the top (default: true).
+ */
+export function alertMessage(
+  message,
+  type = "error",
+  fieldSelector = null,
+  scroll = true,
+) {
+  // Remove any existing alert
+  const existingAlert = document.querySelector(".custom-alert");
+  if (existingAlert) existingAlert.remove();
+
+  // Create the alert container
+  const alertDiv = document.createElement("div");
+  alertDiv.classList.add("custom-alert", `alert-${type}`);
+  alertDiv.innerHTML = `
+    <div class="alert-content">
+      <p>${message}</p>
+      <button class="close-alert">✖</button>
+    </div>
+  `;
+
+  // Insert the alert at the top of the main element
+  const mainElement = document.querySelector("main");
+  mainElement.prepend(alertDiv);
+
+  // Scroll to the top if required
+  if (scroll) window.scrollTo({ top: 0, behavior: "smooth" });
+
+  // Highlight incorrect field if provided
+  if (fieldSelector) {
+    const field = document.querySelector(fieldSelector);
+    if (field) {
+      field.classList.add("error-highlight");
+      field.focus();
+    }
+  }
+
+  // Close the alert when clicking the button
+  document.querySelector(".close-alert").addEventListener("click", () => {
+    alertDiv.remove();
+    if (fieldSelector)
+      document
+        .querySelector(fieldSelector)
+        ?.classList.remove("error-highlight");
+  });
 }

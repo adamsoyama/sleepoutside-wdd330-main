@@ -1,5 +1,6 @@
-import { getParam, loadHeaderFooter } from "../js/utils.mjs";
+import { getParam, loadHeaderFooter, alertMessage } from "../js/utils.mjs";
 import ExternalServices from "../js/ExternalServices.mjs";
+import { getLocalStorage, setLocalStorage } from "../js/utils.mjs";
 
 const dataSource = new ExternalServices();
 const productId = getParam("product"); // Get product ID from URL parameter
@@ -41,7 +42,7 @@ async function renderProductDetail() {
     // Attach event listener to "Add to Cart" button after rendering
     document
       .getElementById("addToCart")
-      ?.addEventListener("click", addToCartHandler);
+      ?.addEventListener("click", () => addToCart(product));
   } catch (error) {
     console.error("Error rendering product details:", error);
     productElement.innerHTML = "<p>Error loading product details.</p>";
@@ -61,6 +62,19 @@ function fixImagePath(imagePath) {
     return `${import.meta.env.VITE_SERVER_URL}/${imagePath}`; // Append baseURL if the path is relative
   }
   return imagePath;
+}
+
+/**
+ * Adds a product to the cart and provides user feedback.
+ * @param {Object} product - The product object to add.
+ */
+function addToCart(product) {
+  let cart = getLocalStorage("so-cart") || [];
+  cart.push(product);
+  setLocalStorage("so-cart", cart);
+
+  // 🚀 Show success alert
+  alertMessage(`🎉 ${product.Name} added to cart!`, "success");
 }
 
 // Load product details dynamically

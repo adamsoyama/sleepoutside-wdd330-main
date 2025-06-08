@@ -6,15 +6,17 @@ const baseURL = import.meta.env.VITE_SERVER_URL;
  * @param {Response} res - The fetch response object.
  * @returns {Promise<Object>} - Parsed JSON data or throws an error.
  */
-function convertToJson(res) {
+async function convertToJson(res) {
+  const jsonResponse = await res.json(); // Convert response first
+
   if (res.ok) {
-    return res.json();
+    return jsonResponse; // Return data if response is OK
   } else {
-    throw new Error(`Bad Response: ${res.status} ${res.statusText}`);
+    throw { name: "servicesError", message: jsonResponse }; // Pass full error object
   }
 }
 
-// 📌 Updated class name to reflect extended functionality beyond products
+// 📌 ExternalServices class handles API interactions
 export default class ExternalServices {
   constructor() {}
 
@@ -26,8 +28,7 @@ export default class ExternalServices {
   async getData(category) {
     try {
       const response = await fetch(`${baseURL}products/search/${category}`);
-      const data = await convertToJson(response);
-      return data.Result; // API response is structured under "Result"
+      return await convertToJson(response);
     } catch (error) {
       console.error("Error fetching product data:", error);
       return []; // Prevents app crashes
@@ -40,8 +41,13 @@ export default class ExternalServices {
    * @returns {Promise<Object|null>} - The product object or null if not found.
    */
   async findProductById(id) {
-    const products = await this.getData("all"); // Fetch all products
-    return products ? products.find((item) => item.id === id) : null;
+    try {
+      const response = await fetch(`${baseURL}products/${id}`);
+      return await convertToJson(response);
+    } catch (error) {
+      console.error(`Error finding product with ID ${id}:`, error);
+      return null;
+    }
   }
 
   /**
@@ -57,9 +63,7 @@ export default class ExternalServices {
         body: JSON.stringify(orderDetails), // Convert order data to JSON format
       });
 
-      if (!response.ok) throw new Error("Failed to submit order");
-
-      return response.json(); // Return order confirmation response
+      return await convertToJson(response);
     } catch (error) {
       console.error("Order submission error:", error);
       return null; // Prevents app crashes and handles error properly
