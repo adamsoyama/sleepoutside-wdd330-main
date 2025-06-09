@@ -39,6 +39,16 @@ export function setClick(selector, callback) {
 }
 
 /**
+ * Extracts a URL parameter by name.
+ * @param {string} paramName - The parameter to retrieve from the URL.
+ * @returns {string|null} - The parameter value or null if not found.
+ */
+export function getParam(paramName) {
+  const urlParams = new URLSearchParams(window.location.search);
+  return urlParams.get(paramName);
+}
+
+/**
  *  Renders a list using a provided template function and inserts it into the DOM.
  */
 export function renderListWithTemplate(
